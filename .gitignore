@@ -7,6 +7,9 @@ temp/
 coverage
 ormconfig.json
 dist
+jest.config.ts
+test/
+.docker/dbdata
 
 uploads/*
 !uploads/ .gitkeep
