@@ -1,7 +1,7 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { dataSource } from '@shared/typeorm';
 import User from '@modules/users/typeorm/entities/User';
 
-@EntityRepository(User)
 class UserRepository extends Repository<User> {
   public async findByName(name: string): Promise<User | undefined> {
     const user = await this.findOne({

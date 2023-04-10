@@ -67,7 +67,7 @@
     "rate-limiter-flexible": "^2.4.1",
     "redis": "^4.6.5",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "0.2.29",
+    "typeorm": "^0.3.14",
     "typeorm-pagination": "^2.0.3",
     "uuid": "^9.0.0"
   }

@@ -1,25 +1,27 @@
-import { getCustomRepository } from 'typeorm';
-import Customer from '@modules/customers/typeorm/entities/Customer';
-import CustomersRepository from '@modules/customers/typeorm/repositories/CustomersRepository';
+import { ICustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepositoryInterface';
+import CustomersRepository, { ICustomerPaginate } from '@modules/customers/typeorm/repositories/CustomersRepository';
 
-interface IPaginate {
-  from: number;
-  to: number;
-  per_page: number;
-  total: number;
-  current_page: number;
-  prev_page: number | null;
-  next_page: number | null;
-  data: Customer[];
+interface ISearchParams {
+  page: number;
+  limit: number;
 }
-
 class ListCustomerService {
-  public async execute(): Promise<IPaginate> {
-    const customersRepository = getCustomRepository(CustomersRepository);
+  private customersRepository: ICustomersRepository
+  constructor() {
+    this.customersRepository = new CustomersRepository();
+  }
 
-    const customers = await customersRepository.createQueryBuilder().paginate();
+  public async execute({ limit, page }: ISearchParams): Promise<ICustomerPaginate> {
+    const take = limit;
+    const skip = (Number(page) - 1) * take;
 
-    return customers as IPaginate;
+    const customers = await this.customersRepository.findAll({
+      page,
+      skip,
+      take,
+    });
+
+    return customers;
   }
 }
 
