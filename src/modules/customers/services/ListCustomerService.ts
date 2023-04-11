@@ -1,12 +1,12 @@
-import { ICustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepositoryInterface';
-import CustomersRepository, { ICustomerPaginate } from '@modules/customers/typeorm/repositories/CustomersRepository';
+import { ICustomerPaginate, ICustomersRepository } from '@modules/customers/typeorm/repositories/CustomersRepositoryInterface';
+import CustomersRepository from '@modules/customers/typeorm/repositories/CustomersRepository';
 
 interface ISearchParams {
   page: number;
   limit: number;
 }
 class ListCustomerService {
-  private customersRepository: ICustomersRepository
+  private customersRepository: ICustomersRepository;
   constructor() {
     this.customersRepository = new CustomersRepository();
   }

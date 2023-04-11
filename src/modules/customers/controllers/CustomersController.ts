@@ -52,7 +52,7 @@ export default class CustomersController {
       email,
     });
 
-    return response.json(customer);
+    return response.json('Customer updated successfuly!');
   }
 
   public async delete(request: Request, response: Response): Promise<Response> {

@@ -1,24 +1,26 @@
 import { Repository } from 'typeorm';
 import { dataSource } from '@shared/typeorm';
 import Customer from '@modules/customers/typeorm/entities/Customer';
+import { ICustomerPaginate, ICreate, SearchParams, IDelete, IUpdate } from '@modules/customers/typeorm/repositories/CustomersRepositoryInterface';
 
-export interface ICustomerPaginate {
-  per_page: number;
-  total: number;
-  current_page: number;
-  data: Customer[];
-}
-export interface SearchParams {
-  page: number;
-  skip: number;
-  take: number;
-}
 class CustomersRepository {
   private ormRepository: Repository<Customer>
 
   constructor() {
     this.ormRepository = dataSource.getRepository(Customer);
   }
+
+  public async create({ name, email }: ICreate): Promise<Customer> {
+    const customer = this.ormRepository.create({
+      name,
+      email,
+    });
+
+    await this.ormRepository.save(customer);
+
+    return customer;
+  }
+
   public async findByName(name: string): Promise<Customer | null> {
     const customer = await this.ormRepository.findOneBy({ name });
 
@@ -48,6 +50,14 @@ class CustomersRepository {
     };
 
     return result;
+  }
+
+  public async update({ id, name, email }: IUpdate): Promise<void> {
+    await this.ormRepository.update(id, { name, email });
+  }
+
+  public async remove({ id }: IDelete): Promise<void> {
+    await this.ormRepository.delete(id);
   }
 }
 
