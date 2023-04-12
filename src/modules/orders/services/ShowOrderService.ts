@@ -1,5 +1,5 @@
+import { IOrdersRepository } from '@modules/orders/typeorm/repositories/OrdersRepositoryInterface';
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import Order from '../typeorm/entities/Order';
 import OrdersRepository from '../typeorm/repositories/OrdersRepository';
 
@@ -8,10 +8,14 @@ interface IRequest {
 }
 
 class ShowOrderService {
-  public async execute({ id }: IRequest): Promise<Order> {
-    const ordersRepository = getCustomRepository(OrdersRepository);
+  private ordersRepository: IOrdersRepository;
 
-    const order = await ordersRepository.findById(id);
+  constructor() {
+    this.ordersRepository = new OrdersRepository();
+  }
+
+  public async execute({ id }: IRequest): Promise<Order> {
+    const order = await this.ordersRepository.findById(id);
 
     if (!order) {
       throw new AppError('Order not found.');
