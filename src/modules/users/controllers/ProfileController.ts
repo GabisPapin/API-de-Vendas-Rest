@@ -27,6 +27,6 @@ export default class ProfileController {
       old_password,
     });
 
-    return res.json(instanceToPlain(user));
+    return res.json('Profile updated successfuly.');
   }
 }

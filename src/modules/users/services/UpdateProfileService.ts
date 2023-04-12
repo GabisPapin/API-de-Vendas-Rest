@@ -1,36 +1,28 @@
-import { getCustomRepository } from 'typeorm';
-import User from '@modules/users/typeorm/entities/User';
-import UsersRepository from '@modules/users/typeorm/repositories/UsersRepository';
+import UserRepository from '@modules/users/typeorm/repositories/UsersRepository';
 import AppError from '@shared/errors/AppError';
-import { compare, hash } from 'bcryptjs';
-
-interface IRequest {
-  user_id: string;
-  name: string;
-  email: string;
-  password?: string;
-  old_password?: string;
-}
-
-const EIGHT = 8;
+import { compare } from 'bcryptjs';
+import { IUpdateProfile, IUserRepository } from '@modules/users/typeorm/repositories/UserRepositoryInterface';
 
 class UpdateProfileService {
+  private userRepository: IUserRepository;
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
+
   public async execute({
     user_id,
     name,
     email,
     password,
     old_password,
-  }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository);
-
-    const user = await usersRepository.findById(user_id);
+  }: IUpdateProfile): Promise<void> {
+    const user = await this.userRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('User not found.');
     }
 
-    const userUpdateEmail = await usersRepository.findByEmail(email);
+    const userUpdateEmail = await this.userRepository.findByEmail(email);
 
     if (userUpdateEmail && userUpdateEmail.id !== user_id) {
       throw new AppError('There already have one user with this email.');
@@ -47,15 +39,13 @@ class UpdateProfileService {
         throw new AppError('Old password does not match.');
       }
 
-      user.password = await hash(password, EIGHT);
+      await this.userRepository.updateProfile({
+        user_id,
+        name,
+        email,
+        password,
+      });
     }
-
-    user.name = name;
-    user.email = email;
-
-    await usersRepository.save(user);
-
-    return user;
   }
 }
 

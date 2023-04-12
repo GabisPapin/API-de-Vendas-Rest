@@ -33,13 +33,13 @@ export default class UsersController {
 
     const updateUser = new UpdateUserService();
 
-    const user = await updateUser.execute({
+    await updateUser.execute({
       id,
       name,
       email,
       password,
     });
 
-    return res.json(instanceToPlain(user));
+    return res.json('User updated successfuly.');
   }
 }
